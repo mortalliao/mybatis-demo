@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 引入外部配置文件 -->
+	<properties resource="jdbc.properties"></properties>
+
+	<!-- mybatis的运行时配置 -->
+	<settings>
+		<!-- 是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 
+			的类似映射。 -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<!-- 开启二级缓存；默认true,开启 -->
+		<setting name="cacheEnabled" value="true" />
+		<!-- 开启延迟加载 -->
+		<setting name="lazyLoadingEnabled" value="true" />
+		<!-- 当一个对象中有多个延迟加载属性时；如果为true，则加载其中一个属性时其它延迟加载属性一并加载；否则反之。 -->
+		<setting name="aggressiveLazyLoading" value="false" />
+	</settings>
+
+	<!-- 别名设置 -->
+	<typeAliases>
+		<!-- 单个实体指定别名 -->
+		<!-- <typeAlias type="cn.itcast.mybatis.pojo.User" alias="User"/> -->
+		
+		<!-- 给某个包路径下的类指定默认别名，默认别名为类名 -->
+		<package name="com.sourcecode.learning.mybatis.entity" />
+	</typeAliases>
+
+	<!-- <plugins>
+		com.github.pagehelper为PageHelper类所在包名
+		<plugin interceptor="com.github.pagehelper.PageHelper">
+			<property name="dialect" value="mysql" />
+			设置为true时，使用RowBounds分页会进行count查询
+			<property name="rowBoundsWithCount" value="true" />
+		</plugin>
+	</plugins> -->
+	
+	<environments default="development">
+		<!-- 开发环境 -->
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+		<!-- 测试环境 -->
+		<environment id="test">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<!-- 加载方式三：指定接口的全限定名的话；必须①要将mapper映射文件放置到接口所在的路径 ； ② mapper映射文件名称必须和接口名称一致 -->
+		<!-- <mapper class="cn.itcast.mybatis.dao.UserDao" /> -->
+
+		<!-- 加载方式二：直接指定映射文件的绝对路径 -->
+		<!-- <mapper
+			url="file:///D:\20160830\workspace2\mybatis\src\main\resources\UserDaoMapper1.xml" /> -->
+
+		<!-- 加载方式一：默认在classes下找映射配置文件 -->
+		<!-- <mapper resource="TestMapper.xml" />
+		<mapper resource="UserMapper.xml" />
+		<mapper resource="DynamicMapper.xml" />
+		<mapper resource="StudentMapper.xml" /> -->
+		<!-- 加载方式四：指定接口所在的包路径；必须①要将mapper映射文件放置到接口所在的路径 ； ② mapper映射文件名称必须和接口名称一致 -->
+		<!-- <package name="cn.itcast.mybatis.dao" /> -->
+	</mappers>
+</configuration>
