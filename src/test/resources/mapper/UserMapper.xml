@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sourcecode.learning.mybatis.mapper.UserMapper">
+
+	<!-- 开启二级缓存 -->
+	<cache />
+
+	<!-- 定义查询的sql片段 -->
+	<!-- <sql id="userColumns">id, account, password, user_name, gender, age, birthday, create_time</sql> -->
+
+	<!-- id一般为接口中方法的名称 -->
+	<select id="login" resultType="User">
+		select * from t_user where account = #{account} and password = #{password}
+	</select>
+	
+	<select id="login2" resultType="User">
+		select * from t_user where account = #{account} and password = #{password}
+	</select>
+	
+	<select id="login3" resultType="User">
+		select * from t_user where account = #{account} and password = #{password}
+	</select>
+	
+	<select id="login4" resultType="map">
+		select * from t_user where account = #{account} and password = #{password}
+	</select>
+	
+	<!-- 定义userResultMap 
+		id – 一个 ID 结果;标记结果作为 ID 可以帮助提高整体效能
+		autoMapping 值为truen,自动地将查询到的字段值设置到type对应的类中属性中，默认为true；否则反之
+	-->
+	<resultMap type="User" id="userResultMap" autoMapping="true">
+		<id property="id" column="id"/>
+		
+		<!-- 具体的列名称和 type对应的类中的属性名称 -->
+		<result column="user_name" property="userName"/>
+	</resultMap>
+	
+	<select id="queryUserById" resultMap="userResultMap">
+		select 
+		<include refid="com.sourcecode.learning.mybatis.mapper.DynamicMapper.userColumns"/> 
+		from t_user where id = #{id}
+	</select>
+	
+	<select id="queryMaleUserByUserName" resultType="User">
+		select * from t_user where gender = 1
+		<!-- 条件判断，用户可有可无 -->
+		<if test="userName != null and userName != ''">
+			AND user_name like #{userName}
+		</if>
+		
+	</select>
+	
+	<select id="queryUserByGender" resultType="User">
+		select * from t_user where gender = #{gender}
+		<!-- 如果是男，则需要再查询年龄大于等于15岁的；如果是女，则需要再查询年龄大于等于14岁的 -->
+		<choose>
+			<when test="gender == 1">
+				AND age >= 15
+			</when>
+			<otherwise>
+				AND age >=14
+			</otherwise>
+		</choose>
+		
+	</select>
+	
+	<select id="queryUserByUserNameAndGender" resultType="User">
+		select * from t_user
+		<!-- 优化查询条件语句（纠正语法） -->
+		<where>
+			<!-- 根据用户名和性别查询用户；当性别的值不是1或者0时，设置查询的性别的值为-1。 -->
+			<if test="userName != null and userName != ''">
+				user_name like #{userName}
+			</if>
+			
+			<if test="gender != null">
+				<choose>
+					<when test="gender == 1">
+						AND gender = 1
+					</when>
+					<when test="gender == 0">
+						AND gender = 0
+					</when>
+					<otherwise>
+						AND gender = -1
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</select>
+	
+	<!-- 更新语句 -->
+	<update id="updateUserSelective">
+		UPDATE t_user
+		<set>
+			 <if test="account != null and account !=''">
+			 	account = #{account},
+			 </if>
+			 <if test="password != null and password !=''">
+			 password = #{password},
+			 </if>
+			 <if test="userName != null and userName !=''">
+			 user_name = #{userName},
+			 </if>
+			 <if test="gender != null">
+			 gender = #{gender},
+			 </if>
+			 <if test="age != null">
+			 age = #{age},
+			 </if>
+			 <if test="birthday != null">
+			 birthday = #{birthday}
+			 </if>
+		 </set>
+		WHERE
+			id = #{id}
+	</update>
+	
+	<!-- 批量查询数据
+		foreach
+		
+	 -->
+	<select id="queryUsersByIds" resultType="User">
+		select * from t_user where id in
+		
+		<!-- 
+		   foreach拼接的内容为：(1,2,3)
+		   collection 传入的数据集合
+		   open 拼接的开始字符
+		   close 拼接的结束字符
+		   separator 每个数据的 分隔符
+		   item 遍历时的临时参数名称
+		 -->
+		 <foreach collection="ids" open="(" close=")" separator="," item="id">#{id}</foreach>
+		 
+	</select>
+</mapper>

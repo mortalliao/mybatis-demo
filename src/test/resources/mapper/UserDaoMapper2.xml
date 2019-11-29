@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	mapper映射文件的namespace名称必须唯一
+	如果使用动态代理实现接口的实现类的话：必须空间名称为接口的 全限定名
+ -->
+<mapper namespace="com.sourcecode.learning.mybatis.dao.UserDao">
+	<select id="queryUserById" resultType="User">
+		select *  from t_user where id = #{id}
+	</select>
+	<!-- 
+		在mybatis中，如果返回的结果是集合列表的话，返回的数据类型应该为集合中的对象的类型
+	 -->
+	<select id="queryUsers" resultType="com.sourcecode.learning.mybatis.entity.User">
+		select *,user_name userName,create_time createTime from t_user
+	</select>
+	
+	<!-- 
+		id  表示这个执行语句的唯一标识符
+		parameterType 输入数据的类型
+		useGeneratedKeys 用在insert的时候，当插入数据后如果需要对象返回主键值则需要设置为true；也即需要主键值回填到对象中
+		keyProperty 是对象中的主键属性名称
+		keyColumn 表中对应的主键字段名称
+		
+		useGeneratedKeys 、keyProperty、keyColumn如果不需要主键值回填则全部可以不用设置
+	 -->
+	<insert id="saveUser" parameterType="com.sourcecode.learning.mybatis.entity.User" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO t_user (id, account, password, user_name, gender, age, birthday, create_time) 
+			VALUES (null, #{account}, #{password}, #{userName}, #{gender}, #{age}, #{birthday}, now())
+	</insert>
+	
+	<!-- 更新语句 -->
+	<update id="updateUser">
+		UPDATE t_user
+		SET 
+		 account = #{account},
+		 password = #{password},
+		 user_name = #{userName},
+		 gender = #{gender},
+		 age = #{age},
+		 birthday = #{birthday}
+		WHERE
+			id = #{id}
+	</update>
+	
+	<!-- 删除语句 -->
+	<delete id="deleteUserById">
+		DELETE FROM t_user WHERE id = #{id}
+	</delete>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sourcecode.learning.mybatis.mapper.StudentMapper">
+
+	<select id="queryStudentAndAddressByStuId" resultType="StudentAddress">
+		SELECT s.*,a.*
+		FROM t_student s,t_address a
+		WHERE s.stu_id = a.stu_id AND s.stu_id = #{stuId}
+	</select>
+	
+	<!-- 映射学生和学生地址 -->
+	<resultMap type="Student" id="studentAddressResultMap" autoMapping="true">
+		<id property="stuId" column="stu_id"/>
+		
+		<!-- 解决地址映射 -->
+		<!-- 
+			association 常用在一对多，一对一的一方数据映射时
+			property 表示在type(Student)类型对象中的属性名称
+			javaType property属性对应的Java类型
+		 -->
+		<association property="address" javaType="Address" autoMapping="true">
+			<!-- 唯一标识，映射id属性外提高查询对比效率 -->
+			<id property="addressId" column="addresss_id"/>
+		</association>
+	</resultMap>
+	
+	<select id="queryStudentByStuId" resultMap="studentAddressResultMap">
+		SELECT s.*,a.*
+		FROM t_student s,t_address a
+		WHERE s.stu_id = a.stu_id AND s.stu_id = #{stuId}
+	</select>
+	
+	<resultMap type="Grade" id="gradeAndStudentResultMap" autoMapping="true">
+		<id property="gradeId" column="grade_id"/>
+		
+		<!-- 映射学生列表 -->
+		<!-- collection 映射一对多的结果集
+			property 表示在type(Student)类型对象中的集合属性名称
+			javaType 集合属性java类型
+			ofType 集合中数据对象的java类型
+		 -->
+		<collection property="students" javaType="list" ofType="Student" autoMapping="true">
+			<id property="stuId" column="stu_Id"/>
+		</collection>
+	</resultMap>
+	
+	<select id="queryGradeAndStudentByGradeId" resultMap="gradeAndStudentResultMap">
+		SELECT g.*,s.*
+		FROM t_grade g, t_student s
+		WHERE g.grade_id = s.grade_id and g.grade_id = #{gradeId}
+	</select>
+	
+	<!-- 根据学生ID查询学生信息包括学生的地址及其学习的课程 -->
+	<!-- extends 可以集成已经定义过的resultMap -->
+	<resultMap type="Student" id="studentAndAddressAndCoursesResultMap" extends="studentAddressResultMap" autoMapping="true">
+		<!-- <id property="stuId" column="stu_id"/>
+		
+		映射学生地址 
+		<association property="address" javaType="Address" autoMapping="true">
+			<id property="addressId" column="address_id"/>
+		</association> -->
+		
+		<!-- 映射学习课程  -->
+		<collection property="courses" javaType="list" ofType="Course" autoMapping="true">
+			<id property="courseId" column="course_id"/>
+		</collection>
+	</resultMap>
+	
+	<select id="queryStuAndAddressAndCoursesByStuId" resultMap="studentAndAddressAndCoursesResultMap">
+		SELECT s.*,a.*,c.*
+		FROM t_student s, t_address a, t_student_course sc, t_course c
+		WHERE s.stu_id = a.stu_id AND s.stu_id = sc.stu_id 
+		AND sc.course_id = c.course_id AND s.stu_id = #{stuId} 
+	</select>
+	
+	
+	<!-- 根据学生ID查询学生信息包括延迟加载学生的年级；即调用学生对象中的获取年级的方法时才去执行查询年级的SQL。 -->
+	<select id="queryGradeByGradeId" resultType="Grade">
+		select * from t_grade where grade_id = #{gradeId}
+	</select>
+	
+	<resultMap type="Student" id="studentAndGradeResultMap" autoMapping="true">
+		<id property="stuId" column="stu_id"/>
+		
+		<!-- 延迟加载： 处理年级的结果映射 -->
+		<!-- 
+			column 属于当前查询字段；表示需要将查询到的数据传入association 中select指定的语句中的输入参数
+		 -->
+		<association property="grade" javaType="Grade" column="grade_id" select="queryGradeByGradeId" autoMapping="true"></association>
+	</resultMap>
+	
+	<select id="lazyQueryStudentAndGradeByStuId" resultMap="studentAndGradeResultMap">
+		SELECT * FROM t_student WHERE stu_id = #{stuId}	
+	</select>
+</mapper>
