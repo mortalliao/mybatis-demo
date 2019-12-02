@@ -38,7 +38,7 @@ public interface UserMapper {
 	public List<User> queryUserByUserNameAndGender(@Param("userName") String userName, @Param("gender") Integer gender);
 
 	// 更新用户
-	public void updateUserSelective(User user);
+	public int updateUserSelective(User user);
 
 	// 根据用户的ID集合查询用户列表
 	public List<User> queryUsersByIds(@Param("ids") Long[] ids);
