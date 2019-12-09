@@ -9,10 +9,10 @@ public class LogTest {
 
 	@Test
 	public void test() {
+		log.trace("trace");
 		log.debug("debug");
 		log.info("info");
-		log.error("error");
-		log.trace("trace");
 		log.warn("warn");
+		log.error("error");
 	}
 }
