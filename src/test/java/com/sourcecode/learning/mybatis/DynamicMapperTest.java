@@ -21,7 +21,7 @@ public class DynamicMapperTest {
 	public void setUp() throws Exception {
 		String resource = "mybatis-config.xml";
 		InputStream inputStream = Resources.getResourceAsStream(resource);
-		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+		SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream, "");
 		
 		SqlSession sqlSession = sqlSessionFactory.openSession(true);
 		
