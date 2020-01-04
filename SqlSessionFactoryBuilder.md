@@ -49,39 +49,8 @@ public SqlSessionFactory build(Configuration config) {
 
 ### SqlSession sqlSession = sqlSessionFactory.openSession(true);
 
-#### DefaultSqlSessionFactory
-
-ExecutorType: SIMPLE, REUSE, BATCH
-
-openSessionFromDataSource
-	TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
-	Transaction tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
-	Executor executor = configuration.newExecutor(tx, execType);
-	return new DefaultSqlSession(configuration, executor, autoCommit);
-
-##### TransactionFactory
-TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
-
-if (environment == null || environment.getTransactionFactory() == null) {
-  return new ManagedTransactionFactory();
-}
-return environment.getTransactionFactory();
 
 
-
-Environment(String id, TransactionFactory transactionFactory, DataSource dataSource)
-
-
-XMLConfigBuilder environmentsElement(...)
-
-interface DataSourceFactory {
-	void setProperties(Properties props);
-	DataSource getDataSource();
-}
-
-TransactionFactory txFactory = transactionManagerElement(child.evalNode("transactionManager"));
-DataSourceFactory dsFactory = dataSourceElement(child.evalNode("dataSource"));
-DataSource dataSource = dsFactory.getDataSource();
 
 
 

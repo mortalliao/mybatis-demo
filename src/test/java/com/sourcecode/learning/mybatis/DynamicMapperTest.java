@@ -29,7 +29,6 @@ public class DynamicMapperTest {
 		dynamicMapper = sqlSession.getMapper(DynamicMapper.class);
 	}
 
-	
 	@Test
 	public void testQueryByTableName() {
 		List<Map<String,Object>> list = dynamicMapper.queryByTableName("t_user");

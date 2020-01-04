@@ -49,6 +49,7 @@
 	<mappers>
 
 		<!-- 加载方式一：默认在classes下找映射配置文件 -->
+		<!-- resource url class -->
 		<mapper resource="TestMapper.xml" />
 		<mapper resource="mapper/UserMapper.xml" />
 		<mapper resource="mapper/DynamicMapper.xml" />
