@@ -211,45 +211,7 @@ Mybatis的Xml映射文件中，不同的Xml映射文件，id是否可以重复�
 
 
 
-一对一、一对多的关联查询?
-	```
-<mapper namespace="com.lcb.mapping.userMapper">  
-    <!--association  一对一关联查询 -->  
-    <select id="getClass" parameterType="int" resultMap="ClassesResultMap">  
-        select * from class c,teacher t where c.teacher_id=t.t_id and c.c_id=#{id}  
-    </select>  
- 
-    <resultMap type="com.lcb.user.Classes" id="ClassesResultMap">  
-        <!-- 实体类的字段名和数据表的字段名映射 -->  
-        <id property="id" column="c_id"/>  
-        <result property="name" column="c_name"/>  
-        <association property="teacher" javaType="com.lcb.user.Teacher">  
-            <id property="id" column="t_id"/>  
-            <result property="name" column="t_name"/>  
-        </association>  
-    </resultMap>  
- 
- 
-    <!--collection  一对多关联查询 -->  
-    <select id="getClass2" parameterType="int" resultMap="ClassesResultMap2">  
-        select * from class c,teacher t,student s where c.teacher_id=t.t_id and c.c_id=s.class_id and c.c_id=#{id}  
-    </select>  
- 
-    <resultMap type="com.lcb.user.Classes" id="ClassesResultMap2">  
-        <id property="id" column="c_id"/>  
-        <result property="name" column="c_name"/>  
-        <association property="teacher" javaType="com.lcb.user.Teacher">  
-            <id property="id" column="t_id"/>  
-            <result property="name" column="t_name"/>  
-        </association>  
- 
-        <collection property="student" ofType="com.lcb.user.Student">  
-            <id property="id" column="s_id"/>  
-            <result property="name" column="s_name"/>  
-        </collection>  
-    </resultMap>  
-</mapper>
-	```
+
 
 
 
